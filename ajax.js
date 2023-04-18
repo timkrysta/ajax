@@ -1,20 +1,18 @@
 /**
  * Returns a new XMLHttpRequest object
  */
-function createXHR() {
+const createXHR = () => {
   if (typeof XMLHttpRequest !== 'undefined') {
     return new XMLHttpRequest();
   }
-  
   const versions = [
-    'MSXML2.XmlHttp.6.0',
-    'MSXML2.XmlHttp.5.0',
-    'MSXML2.XmlHttp.4.0',
-    'MSXML2.XmlHttp.3.0',
-    'MSXML2.XmlHttp.2.0',
-    'Microsoft.XmlHttp'
+    "MSXML2.XmlHttp.6.0",
+    "MSXML2.XmlHttp.5.0",
+    "MSXML2.XmlHttp.4.0",
+    "MSXML2.XmlHttp.3.0",
+    "MSXML2.XmlHttp.2.0",
+    "Microsoft.XmlHttp"
   ];
-  
   let xhr;
   for (let i = 0; i < versions.length; i++) {
     try {
@@ -22,9 +20,9 @@ function createXHR() {
       break;
     } catch (e) {}
   }
-  
   return xhr;
-}
+};
+
 
 /**
   Sends an AJAX request with the specified options
@@ -61,70 +59,62 @@ function ajax(options = {}) {
     timeout,
     ontimeout,
   } = options;
-  
+
   if (beforeSend && beforeSend() === false) {
-    console.log('Aborting AJAX request');
-    return;
+      console.log('Aborting AJAX request');
+      return;
   }
 
   const xhr = createXHR();
   xhr.withCredentials = true;
 
   if (progress) {
-    xhr.onprogress = e => {
+    xhr.onprogress = (e) => {
+      // e.loaded           = how many bytes downloaded
+      // e.lengthComputable = true if the server sent Content-Length header, if true we can find the size of the response
+      // e.total            = total number of bytes (if lengthComputable is true)
       const total = e.lengthComputable ? e.total : 0;
       const loaded = e.loaded;
       progress(xhr, loaded, total);
-    };
+    }
   }
-  
   xhr.onreadystatechange = () => {
     if (xhr.readyState == 2) {
-      // console.log('Header received');
-    } else if (xhr.readyState == 3) {
-      // console.log('Loading response');
-    } else if (xhr.readyState == 4) {
-      // console.log('Request Finished');
+      // console.log("Header received");
+    }
+    else if (xhr.readyState == 3) {
+      // console.log("Loading response");
+    }
+    else if (xhr.readyState == 4) {
+      // console.log("Request Finished");
       if (xhr.status === 200) {
         if (success) success(xhr, xhr.responseText);
-      } else {
+      }
+      else {
         if (failure) failure(xhr, xhr.responseText);
       }
     }
   };
 
-  if (complete) {
-    xhr.onload = () => complete(xhr);
-  }
+  if (complete) { xhr.onload  = () => complete(xhr); }
+  if (error)    { xhr.onerror = () => error(xhr, xhr.statusText); }
+  if (abort)    { xhr.onabort = () => abort(xhr); }
 
-  if (error) {
-    xhr.onerror = () => error(xhr, xhr.statusText);
-  }
-
-  if (abort) {
-    xhr.onabort = () => abort(xhr);
-  }
-
-  if (timeout) {
-    xhr.timeout = timeout;
-  }
-
-  if (ontimeout) {
-    xhr.ontimeout = () => ontimeout(xhr);
-  }
+  if (timeout)   { xhr.timeout = timeout; }
+  if (ontimeout) { xhr.ontimeout = () => ontimeout(xhr); }
 
   try {
     let query = [];
     for (const key in data) {
-      query.push(
-        encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
-      );
+      query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
     }
 
+    type = type.toUpperCase();
     if (type == 'GET') {
       data = null;
-      url = url + (query.length ? '?' + query.join('&') : '');
-    } else if (type == 'POST') {
+      url  = url + (query.length ? '?' + query.join('&') : '');
+    }
+    else if (type == 'POST') {
       data = query.join('&');
     }
 
@@ -135,14 +125,16 @@ function ajax(options = {}) {
     }
 
     for (const key in headers) {
-      if (headers.hasOwnProperty(key)) {
+      if (Object.hasOwnProperty.call(headers, key)) {
         xhr.setRequestHeader(key, headers[key]);
       }
     }
 
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
     xhr.send(data);
-  } catch (e) {
-    console.log('Unable to connect to server');
+  }
+  catch (e) {
+    alert("Unable to connect to server");
   }
 }
