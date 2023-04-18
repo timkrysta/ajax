@@ -99,7 +99,7 @@ ajax({
 });
 ```
 
-## Short one
+### Short one
 
 ```js
 ajax({
