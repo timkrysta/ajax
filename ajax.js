@@ -57,7 +57,7 @@ function ajax({
     abort,
     timeout,
     ontimeout
-  } = {}) 
+  } = {})
 {
 
   if (beforeSend && beforeSend() === false) {
