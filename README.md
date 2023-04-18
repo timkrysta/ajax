@@ -30,10 +30,10 @@ ajax({
   // url Specifies the URL to send the request to. Default is the current page
   url: "http://localhost/",
   type: 'GET',
-  async: true, // boolean (default: true)
+  async: true, // default: true
   // Data to be sent to the server. If the HTTP method is one that cannot have an entity body, such as GET, the data is appended to the URL.
   data: {
-    'subject': 'TEST',
+    'foo': 'bar',
   },
   headers: {},
   beforeSend: () => {
@@ -82,7 +82,7 @@ ajax({
 ajax({
   url: "http://localhost/",
   data: {
-    'subject': 'TEST',
+    'foo': 'bar',
   },
   beforeSend: () => {},
   progress: (xhr, loaded, total) => {
@@ -92,14 +92,10 @@ ajax({
       console.log(`${loaded} downloaded`);
     }
   },
-  success: (xhr, data) => {
-    console.log('success', data);
-  },
-  failure: (xhr, data) => {
-    console.log('failure', data);
-  },
-  complete: (xhr) => console.log("Response from server = ", xhr.responseText),
-  error: (xhr, error) => console.log('Unable to make request'),
+  success: (xhr, data) => console.log('success', data),
+  failure: (xhr, data) => console.log('failure', data),
+  complete: (xhr)      => console.log("Response from server = ", xhr.responseText),
+  error: (xhr, error)  => console.log('Unable to make request'),
 });
 ```
 
