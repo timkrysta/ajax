@@ -42,10 +42,9 @@ const createXHR = () => {
   @param {number}   [options.timeout]    - The timeout for the request in milliseconds
   @param {function} [options.ontimeout]  - A function to be called when the request times out
 */
-function ajax(options = {}) {
-  const {
-    url = window.location.href,
-    type = 'GET',
+function ajax({
+    url   = window.location.href,
+    type  = 'GET',
     async = true,
     data,
     headers,
@@ -57,8 +56,9 @@ function ajax(options = {}) {
     error,
     abort,
     timeout,
-    ontimeout,
-  } = options;
+    ontimeout
+  } = {}) 
+{
 
   if (beforeSend && beforeSend() === false) {
       console.log('Aborting AJAX request');
@@ -135,6 +135,6 @@ function ajax(options = {}) {
     xhr.send(data);
   }
   catch (e) {
-    alert("Unable to connect to server");
+    console.log("Unable to connect to server");
   }
 }
